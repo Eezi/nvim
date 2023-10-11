@@ -367,7 +367,7 @@ vim.keymap.set('n', '<leader>fw', require('telescope.builtin').grep_string, { de
 vim.keymap.set('n', '<leader>g', require('telescope.builtin').live_grep, { desc = '[F]ind by [G]rep' })
 vim.keymap.set('n', '<leader>fd', require('telescope.builtin').diagnostics, { desc = '[F]ind [D]iagnostics' })
 vim.keymap.set('n', '<leader>fr', require('telescope.builtin').resume, { desc = '[F]ind [R]esume' })
-vim.keymap.set("n", "<leader>s", require('telescope.builtin').git_status, { desc = '[F]ind by [G]status' })
+vim.keymap.set("n", "<leader>c", require('telescope.builtin').git_status, { desc = '[F]ind by [G]status' })
 
 
 -- HARPOON --------------------------

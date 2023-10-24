@@ -3,11 +3,6 @@
 --
 -- See the kickstart.nvim README for more information
 return {
-	-- AUTO-PAIRS
-	'windwp/nvim-autopairs',
-	event = "InsertEnter",
-	opts = {}, -- this is equalent to setup({}) function
-
 	-- Harpoon
 	'nvim-lua/plenary.nvim',
 	'ThePrimeagen/harpoon',

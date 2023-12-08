@@ -32,14 +32,17 @@ require('lazy').setup({
 
   -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth',
-  'github/copilot.vim',
-  'mbbill/undotree',
+
   {
     -- AUTO-PAIRS
     'windwp/nvim-autopairs',
     event = "InsertEnter",
     opts = {}, -- this is equalent to setup({}) function
   },
+
+  -- COPILOT
+  'github/copilot.vim',
+
 
   -- NOTE: This is where your plugins related to LSP can be installed.
   --  The configuration is done below. Search for lspconfig to find it below.
@@ -132,6 +135,20 @@ require('lazy').setup({
     },
   },
 
+  {
+    "nvim-neo-tree/neo-tree.nvim",
+    branch = "v3.x",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
+      "MunifTanjim/nui.nvim",
+      -- "3rd/image.nvim", -- Optional image support in preview window: See `# Preview Mode` for more information
+    },
+  },
+  {
+    "APZelos/blamer.nvim"
+  },
+
   --[[{
     -- Add indentation guides even on blank lines
     'lukas-reineke/indent-blankline.nvim',
@@ -172,6 +189,9 @@ require('lazy').setup({
       'nvim-treesitter/nvim-treesitter-textobjects',
     },
     build = ':TSUpdate',
+  },
+  {
+    'mbbill/undotree'
   },
 
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
@@ -253,10 +273,13 @@ vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
 vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
 
+vim.g.blamer_enabled = true
+
 -- REMAPS
+vim.keymap.set("n", "<leader>u", ":UndotreeToggle<CR>")
 
 vim.keymap.set("n", "<S-e>", vim.cmd.Ex)
---vim.keymap.set("n", "<S-e>", ":NvimTreeToggle<CR>")
+vim.keymap.set("n", "<S-r>", ":Neotree<CR>")
 vim.keymap.set("n", "<Space>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
 vim.keymap.set("n", "<C-d>", "<C-d>zz")
 vim.keymap.set("n", "<C-u>", "<C-u>zz")
@@ -299,7 +322,6 @@ require('telescope').setup {
       i = {
         ['<C-u>'] = false,
         ['<C-d>'] = false,
-        ['q'] = actions.close,
       },
     },
   },
@@ -309,8 +331,8 @@ require('telescope').setup {
 pcall(require('telescope').load_extension, 'fzf')
 
 -- See `:help telescope.builtin`
-vim.keymap.set('n', '<leader>o', require('telescope.builtin').oldfiles, { desc = '[?] Find recently opened files' })
-vim.keymap.set('n', '<leader>b', require('telescope.builtin').buffers, { desc = '[ ] Find existing buffers' })
+vim.keymap.set('n', '<leader>fo', require('telescope.builtin').oldfiles, { desc = '[?] Find recently opened files' })
+vim.keymap.set('n', '<leader>fb', require('telescope.builtin').buffers, { desc = '[ ] Find existing buffers' })
 vim.keymap.set('n', '<leader>/', function()
   -- You can pass additional configuration to telescope to change theme, layout, etc.
   require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
@@ -319,14 +341,14 @@ vim.keymap.set('n', '<leader>/', function()
   })
 end, { desc = '[/] Fuzzily search in current buffer' })
 
-vim.keymap.set('n', '<leader>f', require('telescope.builtin').git_files, { desc = 'Find [G]it [F]iles' })
+vim.keymap.set('n', '<leader>ff', require('telescope.builtin').git_files, { desc = 'Find [G]it [F]iles' })
 vim.keymap.set('n', '<leader>FF', require('telescope.builtin').find_files, { desc = '[F]ind [F]iles' })
 vim.keymap.set('n', '<leader>fh', require('telescope.builtin').help_tags, { desc = '[F]ind [H]elp' })
 vim.keymap.set('n', '<leader>fw', require('telescope.builtin').grep_string, { desc = '[F]ind current [W]ord' })
-vim.keymap.set('n', '<leader>g', require('telescope.builtin').live_grep, { desc = '[F]ind by [G]rep' })
+vim.keymap.set('n', '<leader>fg', require('telescope.builtin').live_grep, { desc = '[F]ind by [G]rep' })
 vim.keymap.set('n', '<leader>fd', require('telescope.builtin').diagnostics, { desc = '[F]ind [D]iagnostics' })
 vim.keymap.set('n', '<leader>fr', require('telescope.builtin').resume, { desc = '[F]ind [R]esume' })
-vim.keymap.set("n", "<leader>c", require('telescope.builtin').git_status, { desc = '[F]ind by [G]status' })
+vim.keymap.set("n", "<leader>fs", require('telescope.builtin').git_status, { desc = '[F]ind by [G]status' })
 
 
 -- HARPOON --------------------------
@@ -336,12 +358,8 @@ local ui = require('harpoon.ui')
 vim.keymap.set('n', '<leader>a', mark.add_file, { desc = 'Add new file to the harpoon' })
 vim.keymap.set('n', '<leader>m', require('harpoon.ui').toggle_quick_menu, { desc = 'Open harpoon' })
 
--- UNDOTREE
-vim.keymap.set("n", "<leader>u", vim.cmd.UndotreeToggle)
-
-
--- vim.keymap.set("n", "<Tab>", ui.nav_next)
--- vim.keymap.set("n", "<S-Tab> <<", ui.nav_prev)
+vim.keymap.set("n", "<Tab>", ui.nav_next)
+vim.keymap.set("n", "<S-Tab> <<", ui.nav_prev)
 
 vim.keymap.set("n", "<leader>1", function() ui.nav_file(1) end)
 vim.keymap.set("n", "<leader>2", function() ui.nav_file(2) end)
@@ -350,7 +368,6 @@ vim.keymap.set("n", "<leader>4", function() ui.nav_file(4) end)
 vim.keymap.set("n", "<leader>5", function() ui.nav_file(5) end)
 vim.keymap.set("n", "<leader>6", function() ui.nav_file(6) end)
 -------------------------------------
---
 
 
 -- [[ Configure Treesitter ]]
@@ -560,27 +577,10 @@ cmp.setup {
       behavior = cmp.ConfirmBehavior.Replace,
       select = true,
     },
-    --[['<Tab>'] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_next_item()
-      elseif luasnip.expand_or_locally_jumpable() then
-        luasnip.expand_or_jump()
-      else
-        fallback()
-      end
-    end, { 'i', 's' }),
-    ['<S-Tab>'] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_prev_item()
-      elseif luasnip.locally_jumpable(-1) then
-        luasnip.jump(-1)
-      else
-        fallback()
-      end
-    end, { 'i', 's' }),]] --
   },
   sources = {
     { name = 'nvim_lsp' },
     { name = 'luasnip' },
   },
 }
+
